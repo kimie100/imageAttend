@@ -13,8 +13,14 @@ const imageStorage = new ImageStorage("uploads");
 // Store temporary URLs and their expiration times
 const tempUrls = new Map();
 
-app.use(cors());
-app.use(express.json({ limit: "5mb" })); // Reduced limit since we're not handling base64
+app.use(
+  cors({
+    origin: ["http://ocean00.com", "http://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+app.use(express.json({ limit: "50mb" })); // Reduced limit since we're not handling base64
 app.use("/uploads", express.static("uploads"));
 const ensureUploadDir = (dirname) => {
   const uploadPath = path.join(__dirname, `uploads${dirname}`);
