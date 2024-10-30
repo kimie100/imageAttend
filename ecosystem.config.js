@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "express-cron-server",
+      name: "image",
       script: "server.js",
       watch: true,
       instances: 1,
