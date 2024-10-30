@@ -4,6 +4,8 @@ const cors = require("cors");
 const fs = require("fs");
 const crypto = require("crypto");
 const { format } = require("date-fns");
+const cron = require("node-cron");
+const axios = require("axios");
 const app = express();
 const port = process.env.PORT || 3001;
 const ImageStorage = require("./image");
@@ -13,6 +15,7 @@ const imageStorage = new ImageStorage("uploads");
 // Store temporary URLs and their expiration times
 const tempUrls = new Map();
 
+// Configure CORS
 app.use(
   cors({
     origin: ["http://ocean00.com", "http://localhost:3000"],
@@ -20,66 +23,110 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json({ limit: "50mb" })); // Reduced limit since we're not handling base64
+
+app.use(express.json({ limit: "50mb" }));
 app.use("/uploads", express.static("uploads"));
+
 const ensureUploadDir = (dirname) => {
   const uploadPath = path.join(__dirname, `uploads${dirname}`);
   if (!fs.existsSync(uploadPath)) {
     fs.mkdirSync(uploadPath, { recursive: true });
-    fs.chmod(p, 0o777);
+    fs.chmod(uploadPath, 0o777); // Fixed: Changed 'p' to 'uploadPath'
   }
   return uploadPath;
 };
 
+// API Routes
 app.post("/api/saveImage", async (req, res) => {
   try {
     const { image, type, username } = req.body;
+    let paths, filenames;
+
     switch (type) {
       case "leave":
-        var paths = "leave";
-        const date = format(new Date(), "dd-MM-yyyy");
-        var filenames = `${username}-${date}`;
+        paths = "leave";
+        filenames = `${username}-${format(new Date(), "dd-MM-yyyy")}`;
         break;
       case "user":
-        var paths = "user";
-        var filenames = `${username}`;
+        paths = "user";
+        filenames = username;
         break;
       case "clock":
         const formatted3 = format(new Date(), "dd-MM-yyyy");
-        var paths = `clock/${formatted3}`;
-        var filenames = `${username}`;
+        paths = `clock/${formatted3}`;
+        filenames = username;
         break;
       default:
         break;
     }
-    // let uploadpath = ensureUploadDir(path);
-    // const filepath = path.join(uploadpath, filename);
+
     const result = await imageStorage.saveImage(image, {
       width: 1200,
       quality: 80,
       format: "webp",
-      subDirectory: paths, // Optional: organizes images in subdirectories
+      subDirectory: paths,
       filename: filenames,
     });
+
     if (result.success) {
-      // Save the file info to your database if needed
-      // result.fileInfo.url = path to access the image
-      // result.fileInfo.filePath = full system path
       res.status(201).json(result.fileInfo.url);
     } else {
       res.status(400).json({ error: result.error });
     }
-    // console.log(uploadpath);
-    // res.status(200).json({image})
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "error uploading file" });
   }
 });
+
+// Attendance check endpoint
+app.post("/api/checkattend", async (req, res) => {
+  try {
+    // Implement your attendance checking logic here
+    // This is where you'll put the code that runs when the cron job hits this endpoint
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] Running attendance check`);
+
+    // Add your attendance checking logic here
+
+    res
+      .status(200)
+      .json({ message: "Attendance check completed successfully" });
+  } catch (error) {
+    console.error(`Error in attendance check: ${error.message}`);
+    res.status(500).json({ error: "Failed to complete attendance check" });
+  }
+});
+
 app.get("/", (req, res) => {
   res.status(200).json({ success: "success" });
 });
 
+// Schedule cron job to run at 9 PM daily
+cron.schedule(
+  "0 21 * * *",
+  async () => {
+    const timestamp = new Date().toISOString();
+    try {
+      const response = await axios.post("http://localhost:3001/api/cron");
+      console.log(
+        `[${timestamp}] Scheduled attendance check completed:`,
+        response.data
+      );
+    } catch (error) {
+      console.error(
+        `[${timestamp}] Error in scheduled attendance check:`,
+        error.message
+      );
+    }
+  },
+  {
+    timezone: "Asia/Bangkok",
+  }
+);
+
+// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  console.log("Cron job scheduled for attendance check at 9 PM daily");
 });
