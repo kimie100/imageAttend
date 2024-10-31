@@ -18,7 +18,28 @@ const tempUrls = new Map();
 // Configure CORS
 app.use(
   cors({
-    origin: ["http://ocean00.com", "http://localhost:3000"],
+    origin: function(origin, callback) {
+      const allowedOrigins = [
+        /^https?:\/\/(?:.*\.)?ocean00\.com$/,  // Matches any subdomain of ocean00.com
+        'http://localhost:3000'
+      ];
+      
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      // Check if the origin matches any allowed pattern
+      const allowed = allowedOrigins.some(allowed => {
+        return typeof allowed === 'string' 
+          ? allowed === origin
+          : allowed.test(origin);
+      });
+      
+      if (allowed) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -69,7 +90,7 @@ app.post("/api/saveImage", async (req, res) => {
     });
 
     if (result.success) {
-      res.status(201).json(result.fileInfo.url);
+      res.status(201).json({url:result.fileInfo.url});
     } else {
       res.status(400).json({ error: result.error });
     }
