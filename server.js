@@ -16,37 +16,17 @@ const imageStorage = new ImageStorage("uploads");
 const tempUrls = new Map();
 
 // Configure CORS
-app.use(
-  cors({
-    origin: function(origin, callback) {
-      const allowedOrigins = [
-        /^https?:\/\/(?:.*\.)?ocean00\.com$/,  // Matches any subdomain of ocean00.com
-        'http://localhost:3000'
-      ];
-      
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      
-      // Check if the origin matches any allowed pattern
-      const allowed = allowedOrigins.some(allowed => {
-        return typeof allowed === 'string' 
-          ? allowed === origin
-          : allowed.test(origin);
-      });
-      
-      if (allowed) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ["GET", "POST"],
-    credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    maxAge: 600 // Increase preflight cache time
-  })
-);
+app.use(cors({
+  origin: [
+    "https://ocean00.com",
+    "https://www.ocean00.com",
+    "https://image.ocean00.com",
+    "http://localhost:3000",
+    "http://localhost:3001"  // Add your development port
+  ],
+  methods: ["GET", "POST"],
+  credentials: true
+}));
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
