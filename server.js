@@ -35,6 +35,15 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.raw({ limit: '50mb' }));
 
 // Set timeout
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  // Optionally restart the process
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 
 app.use("/uploads", express.static("uploads"));
 

@@ -1,17 +1,21 @@
 module.exports = {
-  apps: [
-    {
-      name: "image",
-      script: "server.js",
-      watch: true,
-      instances: 1,
-      autorestart: true,
-      max_memory_restart: "1G",
-      log_date_format: "YYYY-MM-DD HH:mm:ss",
-      env: {
-        NODE_ENV: "production",
-        PORT: 3001,
-      },
+  apps: [{
+    name: "image",
+    script: "server.js",  // or "npm",
+    // args: "start",    // use if script is "npm"
+    watch: true,
+    env: {
+      NODE_ENV: "development",
+      PORT: 3001
     },
-  ],
-};
+    env_production: {
+      NODE_ENV: "production",
+      PORT: 3001
+    },
+    max_memory_restart: "1G",
+    error_file: "logs/err.log",
+    out_file: "logs/out.log",
+    time: true,
+    instance_var: 'INSTANCE_ID',
+  }]
+}
