@@ -42,10 +42,20 @@ app.use(
     },
     methods: ["GET", "POST"],
     credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    maxAge: 600 // Increase preflight cache time
   })
 );
 
 app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// If you're uploading files, also add:
+app.use(express.raw({ limit: '50mb' }));
+
+// Set timeout
+server.timeout = 300000;
 app.use("/uploads", express.static("uploads"));
 
 const ensureUploadDir = (dirname) => {
@@ -90,8 +100,10 @@ app.post("/api/saveImage", async (req, res) => {
     });
 
     if (result.success) {
+      console.log(result.success);
       res.status(201).json({url:result.fileInfo.url});
     } else {
+      console.log(result.error);
       res.status(400).json({ error: result.error });
     }
   } catch (error) {
