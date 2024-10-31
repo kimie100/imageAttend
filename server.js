@@ -55,7 +55,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.raw({ limit: '50mb' }));
 
 // Set timeout
-server.timeout = 300000;
+
 app.use("/uploads", express.static("uploads"));
 
 const ensureUploadDir = (dirname) => {
