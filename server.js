@@ -16,33 +16,35 @@ const imageStorage = new ImageStorage("uploads");
 const tempUrls = new Map();
 
 // Configure CORS
-app.use(cors({
-  origin: [
-    "https://ocean00.com",
-    "https://www.ocean00.com",
-    "https://image.ocean00.com",
-    "http://localhost:3000",
-    "http://localhost:3001"  // Add your development port
-  ],
-  methods: ["GET", "POST"],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "https://ocean00.com",
+      "https://www.ocean00.com",
+      "https://image.ocean00.com",
+      "http://localhost:3000",
+      "http://localhost:3001", // Add your development port
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 
 app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // If you're uploading files, also add:
-app.use(express.raw({ limit: '50mb' }));
+app.use(express.raw({ limit: "50mb" }));
 
 // Set timeout
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
   // Optionally restart the process
   process.exit(1);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 
 app.use("/uploads", express.static("uploads"));
@@ -90,7 +92,7 @@ app.post("/api/saveImage", async (req, res) => {
 
     if (result.success) {
       console.log(result.success);
-      res.status(201).json({url:result.fileInfo.url});
+      res.status(201).json({ url: result.fileInfo.url });
     } else {
       console.log(result.error);
       res.status(400).json({ error: result.error });
@@ -130,7 +132,7 @@ cron.schedule(
   async () => {
     const timestamp = new Date().toISOString();
     try {
-      const response = await axios.post("http://localhost:3001/api/cron");
+      const response = await axios.post("http://ocean00.com/api/cron");
       console.log(
         `[${timestamp}] Scheduled attendance check completed:`,
         response.data
@@ -143,7 +145,7 @@ cron.schedule(
     }
   },
   {
-    timezone: "Asia/Bangkok",
+    timezone: "Asia/Kuala_Lumpur",
   }
 );
 
