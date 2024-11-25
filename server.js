@@ -128,11 +128,34 @@ app.get("/", (req, res) => {
 
 // Schedule cron job to run at 9 PM daily
 cron.schedule(
-  "0 21 * * *",
+  "0 16 * * *",
   async () => {
     const timestamp = new Date().toISOString();
     try {
       const response = await axios.post("http://ocean00.com/api/cron");
+      console.log(
+        `[${timestamp}] Scheduled attendance check completed:`,
+        response.data
+      );
+    } catch (error) {
+      console.error(
+        `[${timestamp}] Error in scheduled attendance check:`,
+        error.message
+      );
+    }
+  },
+  {
+    timezone: "Asia/Kuala_Lumpur",
+  }
+);
+cron.schedule(
+  "0 4 * * *", // This line is changed
+  async () => {
+    const timestamp = new Date().toISOString();
+    try {
+      const response = await axios.post(
+        "http://ocean00.com/api/cron/yesterday"
+      );
       console.log(
         `[${timestamp}] Scheduled attendance check completed:`,
         response.data
