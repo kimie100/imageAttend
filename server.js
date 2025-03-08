@@ -132,16 +132,43 @@ cron.schedule(
   async () => {
     const timestamp = new Date().toISOString();
     try {
-      const response = await axios.post("http://ocean00.com/api/cron");
+      // First API call
+      const response = await axios.post("http://ocean00.com/api/cron", {}, );
       console.log(
         `[${timestamp}] Scheduled attendance check completed:`,
         response.data
       );
-    } catch (error) {
-      console.error(
-        `[${timestamp}] Error in scheduled attendance check:`,
-        error.message
+      
+      // Second API call
+      const response2 = await axios.post("http://ocean00.com/api/cron/check", {},);
+      console.log(
+        `[${timestamp}] Scheduled check verification completed:`,
+        response2.data
       );
+      
+    } catch (error) {
+      // More detailed error logging
+      if (error.response) {
+        // The server responded with a status code outside the 2xx range
+        console.error(
+          `[${timestamp}] Server error in scheduled job:`,
+          error.response.status,
+          error.response.data
+        );
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error(
+          `[${timestamp}] No response received from server:`,
+          error.request._currentUrl,
+          error.message
+        );
+      } else {
+        // Something else happened in setting up the request
+        console.error(
+          `[${timestamp}] Error in scheduled attendance check:`,
+          error.message
+        );
+      }
     }
   },
   {
