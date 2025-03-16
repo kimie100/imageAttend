@@ -126,78 +126,78 @@ app.get("/", (req, res) => {
   res.status(200).json({ success: "success" });
 });
 
-// Schedule cron job to run at 9 PM daily
-// cron.schedule(
-//   "0 16 * * *",
-//   async () => {
-//     const timestamp = new Date().toISOString();
-//     try {
-//       // First API call
-//       const response = await axios.post("http://ocean00.com/api/cron", {}, );
-//       console.log(
-//         `[${timestamp}] Scheduled attendance check completed:`,
-//         response.data
-//       );
+Schedule cron job to run at 9 PM daily
+cron.schedule(
+  "0 16 * * *",
+  async () => {
+    const timestamp = new Date().toISOString();
+    try {
+      // First API call
+      const response = await axios.post("http://ocean00.com/api/cron", {}, );
+      console.log(
+        `[${timestamp}] Scheduled attendance check completed:`,
+        response.data
+      );
       
-//       // Second API call
-//       const response2 = await axios.post("http://ocean00.com/api/cron/check", {},);
-//       console.log(
-//         `[${timestamp}] Scheduled check verification completed:`,
-//         response2.data
-//       );
+      // Second API call
+      const response2 = await axios.post("http://ocean00.com/api/cron/check", {},);
+      console.log(
+        `[${timestamp}] Scheduled check verification completed:`,
+        response2.data
+      );
       
-//     } catch (error) {
-//       // More detailed error logging
-//       if (error.response) {
-//         // The server responded with a status code outside the 2xx range
-//         console.error(
-//           `[${timestamp}] Server error in scheduled job:`,
-//           error.response.status,
-//           error.response.data
-//         );
-//       } else if (error.request) {
-//         // The request was made but no response was received
-//         console.error(
-//           `[${timestamp}] No response received from server:`,
-//           error.request._currentUrl,
-//           error.message
-//         );
-//       } else {
-//         // Something else happened in setting up the request
-//         console.error(
-//           `[${timestamp}] Error in scheduled attendance check:`,
-//           error.message
-//         );
-//       }
-//     }
-//   },
-//   {
-//     timezone: "Asia/Kuala_Lumpur",
-//   }
-// );
-// cron.schedule(
-//   "0 4 * * *", // This line is changed
-//   async () => {
-//     const timestamp = new Date().toISOString();
-//     try {
-//       const response = await axios.post(
-//         "http://ocean00.com/api/cron/yesterday"
-//       );
-//       console.log(
-//         `[${timestamp}] Scheduled attendance check completed:`,
-//         response.data
-//       );
-//     } catch (error) {
-//       console.error(
-//         `[${timestamp}] Error in scheduled attendance check:`,
-//         error.message
-//       );
-//     }
-//   },
-//   {
-//     timezone: "Asia/Kuala_Lumpur",
-//   }
-// );
+    } catch (error) {
+      // More detailed error logging
+      if (error.response) {
+        // The server responded with a status code outside the 2xx range
+        console.error(
+          `[${timestamp}] Server error in scheduled job:`,
+          error.response.status,
+          error.response.data
+        );
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error(
+          `[${timestamp}] No response received from server:`,
+          error.request._currentUrl,
+          error.message
+        );
+      } else {
+        // Something else happened in setting up the request
+        console.error(
+          `[${timestamp}] Error in scheduled attendance check:`,
+          error.message
+        );
+      }
+    }
+  },
+  {
+    timezone: "Asia/Kuala_Lumpur",
+  }
+);
+cron.schedule(
+  "0 4 * * *", // This line is changed
+  async () => {
+    const timestamp = new Date().toISOString();
+    try {
+      const response = await axios.post(
+        "http://ocean00.com/api/cron/yesterday"
+      );
+      console.log(
+        `[${timestamp}] Scheduled attendance check completed:`,
+        response.data
+      );
+    } catch (error) {
+      console.error(
+        `[${timestamp}] Error in scheduled attendance check:`,
+        error.message
+      );
+    }
+  },
+  {
+    timezone: "Asia/Kuala_Lumpur",
+  }
+);
 
 // Start the server
 app.listen(port, () => {
