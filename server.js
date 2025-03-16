@@ -126,7 +126,7 @@ app.get("/", (req, res) => {
   res.status(200).json({ success: "success" });
 });
 
-Schedule cron job to run at 9 PM daily
+// Schedule cron job to run at 9 PM daily
 cron.schedule(
   "0 16 * * *",
   async () => {
