@@ -22,6 +22,7 @@ app.use(
       "https://ocean00.com",
       "https://www.ocean00.com",
       "https://image.ocean00.com",
+      "https://app.ocean00.com",
       "http://localhost:3000",
       "http://localhost:3001", // Add your development port
     ],
